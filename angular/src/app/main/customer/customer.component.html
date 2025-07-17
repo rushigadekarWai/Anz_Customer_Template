@@ -1,73 +1,134 @@
 <div class="container-fluid p-4">
-  <div class="customer-header mb-4">
-    <h3 class="page-title">Customers</h3>
-    <div class="header-actions">
-      <div class="search-box">
-        <input type="text" 
-               class="form-control" 
-               placeholder="Search..." 
-               [(ngModel)]="filter"
-               (keyup)="getCustomers()">
-        <i class="fas fa-search search-icon"></i>
-      </div>
+  <!-- Top bar with breadcrumb and create button -->
+  <div class="top-bar mb-4">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Customers</li>
+      </ol>
+    </nav>
+    <div class="top-actions">
       <button class="btn btn-primary create-btn" (click)="createCustomer()">
-        <i class="fas fa-plus mr-2"></i>Create Customer
+        <i class="fas fa-plus mr-2"></i>Create New Customer
       </button>
     </div>
   </div>
 
-  <div class="simple-table-container">
-    <table class="simple-table">
-      <thead>
-        <tr>
-          <th>Customer Name</th>
-          <th>Email</th>
-          <th>Address</th>
-          <th>Registration Date</th>
-          <th class="actions-col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let customer of customers; let i = index">
-          <td>
-            <div class="customer-name">{{ customer.name }}</div>
-          </td>
-          <td>
-            <div class="customer-email">{{ customer.email }}</div>
-          </td>
-          <td>
-            <div class="customer-address">{{ customer.address }}</div>
-          </td>
-          <td>
-            <div class="customer-date">{{ customer.registrationDate | date: 'dd-MM-yyyy' }}</div>
-          </td>
-          <td class="actions-cell">
-            <div class="dropdown">
-              <button class="action-menu-btn" 
-                      (click)="toggleDropdown($event)"
-                      [attr.data-customer-index]="i">
-                <i class="fas fa-ellipsis-h"></i>
-              </button>
-              <div class="simple-dropdown" 
-                   [class.show]="isDropdownOpen === i"
-                   [style.display]="isDropdownOpen === i ? 'block' : 'none'">
-                <div class="dropdown-item" (click)="viewCustomer(customer); closeDropdown()">
-                  <i class="fas fa-eye"></i>
-                  <span>View Details</span>
-                </div>
-                <div class="dropdown-item" (click)="editCustomer(customer); closeDropdown()">
-                  <i class="fas fa-edit"></i>
-                  <span>Edit</span>
-                </div>
-                <div class="dropdown-item delete-item" (click)="deleteCustomer(customer); closeDropdown()">
-                  <i class="fas fa-trash"></i>
-                  <span>Delete</span>
+  <!-- Customers Table Card -->
+  <div class="customers-card">
+    <!-- Card Header with title and search -->
+    <div class="card-header">
+      <div class="header-left">
+        <h3 class="page-title">Customers</h3>
+      </div>
+      <div class="header-actions">
+        <div class="search-box">
+          <input type="text" 
+                 class="form-control" 
+                 placeholder="Search..." 
+                 [(ngModel)]="filter"
+                 (keyup)="getCustomers()">
+          <i class="fas fa-search search-icon"></i>
+        </div>
+        <button class="btn btn-outline-secondary reload-btn" (click)="getCustomers()" title="Reload">
+          <i class="fas fa-sync-alt"></i>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Card Body with table -->
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Customer Name</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Registration Date</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let customer of paginatedCustomers; let i = index">
+            <td>
+              <div class="customer-name">{{ customer.name }}</div>
+            </td>
+            <td>
+              <div class="customer-email">{{ customer.email }}</div>
+            </td>
+            <td>
+              <div class="customer-address">{{ customer.address }}</div>
+            </td>
+            <td>
+              <div class="customer-date">{{ customer.registrationDate | date: 'dd-MM-yyyy' }}</div>
+            </td>
+            <td class="text-center">
+              <div class="dropdown">
+                <button class="action-menu-btn" 
+                        (click)="toggleDropdown($event)"
+                        [attr.data-customer-index]="i">
+                  <i class="fas fa-ellipsis-h"></i>
+                </button>
+                <div class="simple-dropdown" 
+                     [class.show]="isDropdownOpen === i"
+                     [style.display]="isDropdownOpen === i ? 'block' : 'none'">
+                  <div class="dropdown-item" (click)="viewCustomer(customer); closeDropdown()">
+                    <i class="fas fa-eye"></i>
+                    <span>View Details</span>
+                  </div>
+                  <div class="dropdown-item" (click)="editCustomer(customer); closeDropdown()">
+                    <i class="fas fa-edit"></i>
+                    <span>Edit</span>
+                  </div>
+                  <div class="dropdown-item delete-item" (click)="deleteCustomer(customer); closeDropdown()">
+                    <i class="fas fa-trash"></i>
+                    <span>Delete</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination Footer -->
+    <div class="pagination-footer">
+      <div class="pagination-info">
+        <span>Showing {{ startItem }} - {{ endItem }} of {{ totalItems }}</span>
+        <select class="form-select items-per-page-select" [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange()">
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+      <nav aria-label="Page navigation">
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" href="#" (click)="changePage(1); $event.preventDefault()" aria-label="First">
+              <span aria-hidden="true">&laquo;&laquo;</span>
+            </a>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <a class="page-link" href="#" (click)="changePage(currentPage - 1); $event.preventDefault()" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+          <li class="page-item" *ngFor="let page of getVisiblePages()" [class.active]="page === currentPage">
+            <a class="page-link" href="#" (click)="changePage(page); $event.preventDefault()">{{ page }}</a>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" href="#" (click)="changePage(currentPage + 1); $event.preventDefault()" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <a class="page-link" href="#" (click)="changePage(totalPages); $event.preventDefault()" aria-label="Last">
+              <span aria-hidden="true">&raquo;&raquo;</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </div>

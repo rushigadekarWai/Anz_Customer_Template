@@ -11,8 +11,17 @@ import { CustomerServiceProxy, CustomerListDto, ListResultDtoOfCustomerListDto }
 export class CustomerComponent extends AppComponentBase implements OnInit {
 
     customers: CustomerListDto[] = [];
+    paginatedCustomers: CustomerListDto[] = [];
     filter: string = '';
     isDropdownOpen: number | null = null;
+    
+    // Pagination properties
+    currentPage: number = 1;
+    itemsPerPage: number = 10;
+    totalItems: number = 0;
+    totalPages: number = 0;
+    startItem: number = 0;
+    endItem: number = 0;
 
     constructor(
         injector: Injector,
@@ -27,8 +36,58 @@ export class CustomerComponent extends AppComponentBase implements OnInit {
 
     getCustomers(): void {
         this._customerService.getCustomers(this.filter).subscribe((result: ListResultDtoOfCustomerListDto) => {
-            this.customers = result?.items;
+            this.customers = result?.items || [];
+            this.totalItems = this.customers.length;
+            this.calculatePagination();
+            this.updatePaginatedCustomers();
         });
+    }
+
+    calculatePagination(): void {
+        this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+        if (this.currentPage > this.totalPages) {
+            this.currentPage = 1;
+        }
+    }
+
+    updatePaginatedCustomers(): void {
+        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+        const endIndex = startIndex + this.itemsPerPage;
+        this.paginatedCustomers = this.customers.slice(startIndex, endIndex);
+        
+        this.startItem = this.totalItems > 0 ? startIndex + 1 : 0;
+        this.endItem = Math.min(endIndex, this.totalItems);
+    }
+
+    changePage(page: number): void {
+        if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
+            this.currentPage = page;
+            this.updatePaginatedCustomers();
+        }
+    }
+
+    onItemsPerPageChange(): void {
+        this.currentPage = 1;
+        this.calculatePagination();
+        this.updatePaginatedCustomers();
+    }
+
+    getVisiblePages(): number[] {
+        const maxVisiblePages = 5;
+        const pages: number[] = [];
+        
+        let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
+        
+        if (endPage - startPage + 1 < maxVisiblePages) {
+            startPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+            pages.push(i);
+        }
+        
+        return pages;
     }
 
     createCustomer(): void {
