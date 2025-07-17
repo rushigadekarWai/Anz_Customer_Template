@@ -97,6 +97,17 @@ namespace MyTraining1101Demo.Authorization
             administration.CreateChildPermission(AppPermissions.Pages_Administration_Tenant_Settings, L("Settings"), multiTenancySides: MultiTenancySides.Tenant);
             administration.CreateChildPermission(AppPermissions.Pages_Administration_Tenant_SubscriptionManagement, L("Subscription"), multiTenancySides: MultiTenancySides.Tenant);
 
+
+
+            //customerpmissions(context);
+
+            var customers = pages.CreateChildPermission(AppPermissions.Pages_Tenant_Customers, L("Customers"), multiTenancySides: MultiTenancySides.Tenant);
+            customers.CreateChildPermission(AppPermissions.Pages_Tenant_Customers_CreateCustomer, L("CreateNewCustomer"), multiTenancySides: MultiTenancySides.Tenant);
+            //pages.CreateChildPermission(AppPermissions.Pages_Tenant_Customers, L("Customers"), multiTenancySides: MultiTenancySides.Tenant);
+            customers.CreateChildPermission(AppPermissions.Pages_Tenant_Customers_DeleteCustomer, L("DeleteCustomer"), multiTenancySides: MultiTenancySides.Tenant);
+
+
+
             //HOST-SPECIFIC PERMISSIONS
 
             var editions = pages.CreateChildPermission(AppPermissions.Pages_Editions, L("Editions"), multiTenancySides: MultiTenancySides.Host);

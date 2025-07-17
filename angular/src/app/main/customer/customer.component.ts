@@ -3,6 +3,8 @@ import { AppComponentBase } from '@shared/common/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { CustomerServiceProxy, CustomerListDto, ListResultDtoOfCustomerListDto } from '@shared/service-proxies/service-proxies';
 import { CreateCustomerModalComponent } from './create-customer-modal.component';
+import { remove as _remove } from 'lodash-es';
+
 
 @Component({
     templateUrl: './customer.component.html',
@@ -101,6 +103,13 @@ export class CustomerComponent extends AppComponentBase implements OnInit {
         this.getCustomers();
     }
 
+    
+
+
+
+
+
+
     viewCustomer(customer: CustomerListDto): void {
         // Implement view customer logic
         console.log('View customer:', customer);
@@ -114,22 +123,22 @@ export class CustomerComponent extends AppComponentBase implements OnInit {
     }
 
     deleteCustomer(customer: CustomerListDto): void {
-        // Implement delete customer logic
-        console.log('Delete customer:', customer);
         this.message.confirm(
-            'Are you sure you want to delete customer: ' + customer.name + '?',
-            'Confirm Delete',
-            (isConfirmed) => {
+            this.l('AreYouSureToDeleteTheCustomer', customer.name),
+            this.l('AreYouSure'),
+            (isConfirmed: boolean) => {
                 if (isConfirmed) {
-                    this.message.success('Customer deleted successfully');
-                    // Add actual delete API call here
-                    // this._customerService.deleteCustomer(customer.id).subscribe(() => {
-                    //     this.getCustomers();
-                    // });
+                    this._customerService.deleteCustomer(customer.id).subscribe(() => {
+                        this.notify.info(this.l('SuccessfullyDeleted'));
+                        _remove(this.customers, customer); // assumes 'customers' is your list array
+                        this.calculatePagination();
+                        this.updatePaginatedCustomers();
+                    });
                 }
             }
         );
     }
+
 
     toggleDropdown(event: Event): void {
         event.stopPropagation();

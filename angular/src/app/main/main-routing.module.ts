@@ -14,8 +14,10 @@ import { RouterModule } from '@angular/router';
                     },
                     {
                         path: 'customer',
-                        loadChildren: () => import('./customer/customer.module').then(m => m.CustomerModule)
-                       },
+                        loadChildren: () => import('./customer/customer.module').then(m => m.CustomerModule),
+                        data: { permission: 'Pages.Tenant.Customers' }
+                    }
+                    ,
 
                     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
                     { path: '**', redirectTo: 'dashboard' },
@@ -25,4 +27,4 @@ import { RouterModule } from '@angular/router';
     ],
     exports: [RouterModule],
 })
-export class MainRoutingModule {}
+export class MainRoutingModule { }

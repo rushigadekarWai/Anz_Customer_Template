@@ -14,5 +14,8 @@ namespace MyTraining1101Demo.Customers_serv
 
         Task CreateCustomer(CreateCustomerInput input);
 
+        Task DeleteCustomer(EntityDto input);
+
+
     }
 }
