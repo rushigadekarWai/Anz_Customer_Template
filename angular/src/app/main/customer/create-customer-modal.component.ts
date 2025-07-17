@@ -6,7 +6,8 @@ import { finalize } from 'rxjs/operators';
 
 @Component({
     selector: 'createCustomerModal',
-    templateUrl: './create-customer-modal.component.html'
+    templateUrl: './create-customer-modal.component.html',
+    styleUrls: ['./create-customer-modal.component.css']
 })
 export class CreateCustomerModalComponent extends AppComponentBase {
 

@@ -3,46 +3,86 @@
         <div class="modal-content">
             <form *ngIf="active" #customerForm="ngForm" novalidate (ngSubmit)="save()">
                 <div class="modal-header">
-                    <h4 class="modal-title">
-                        <span>{{ "CreateNewCustomer" | localize }}</span>
-                    </h4>
+                    <h4 class="modal-title">Create New Customers and Users</h4>
                     <button type="button" class="close" (click)="close()" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <span aria-hidden="true">×</span>
                     </button>
                 </div>
 
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label>{{ "Name" | localize }}</label>
-                        <input #nameInput class="form-control" type="text" name="name" [(ngModel)]="customer.name" required maxlength="32">
+                    <!-- First Row: Customer Name and Email -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Customer Name<span class="required-asterisk">*</span></label>
+                            <input #nameInput #nameModel="ngModel"
+                                   class="form-control" 
+                                   type="text" 
+                                   name="name" 
+                                   [(ngModel)]="customer.name" 
+                                   required 
+                                   maxlength="32"
+                                   placeholder="Enter customer Name">
+                            <div class="validation-message" *ngIf="nameModel.invalid && nameModel.touched">
+                                Please enter customer Name
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Customer Email<span class="required-asterisk">*</span></label>
+                            <input class="form-control" 
+                                   type="email" 
+                                   name="email" 
+                                   [(ngModel)]="customer.email" 
+                                   required 
+                                   maxlength="255" 
+                                   pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{1,})+$"
+                                   placeholder="Enter customer email"
+                                   #emailInput #emailModel="ngModel">
+                            <div class="validation-message" *ngIf="emailModel.invalid && emailModel.touched">
+                                Please enter customer email
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>{{ "Email" | localize }}</label>
-                        <input class="form-control" type="email" name="email" [(ngModel)]="customer.email" required maxlength="255" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{1,})+$">
-                    </div>
-
-                    <div class="form-group">
-                        <label>{{ "Address" | localize }}</label>
-                        <input class="form-control" type="text" name="address" [(ngModel)]="customer.address" maxlength="255">
-                    </div>
-
-                    <div class="form-group">
-                        <label>{{ "RegistrationDate" | localize }}</label>
-                        <input class="form-control" type="date" name="registrationDate" [(ngModel)]="customer.registrationDate" required>
+                    <!-- Second Row: Customer Address and Registration Date -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Customer Address</label>
+                            <input class="form-control" 
+                                   type="text" 
+                                   name="address" 
+                                   [(ngModel)]="customer.address" 
+                                   maxlength="255"
+                                   placeholder="Enter customer Address">
+                            <div class="validation-message" *ngIf="false">
+                                Please enter customer address
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Registration Date</label>
+                            <input class="form-control" 
+                                   type="date" 
+                                   name="registrationDate" 
+                                   [(ngModel)]="customer.registrationDate" 
+                                   required
+                                   placeholder="Enter your registration Date"
+                                   #dateInput #dateModel="ngModel">
+                            <div class="validation-message" *ngIf="dateModel.invalid && dateModel.touched">
+                                Please enter your registration Date
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="modal-footer">
                     <button [disabled]="saving" type="button" class="btn btn-secondary" (click)="close()">
-                        {{ "Cancel" | localize }}
+                        Cancel
                     </button>
                     <button type="submit" class="btn btn-primary"
                         [disabled]="!customerForm.form.valid"
                         [buttonBusy]="saving"
-                        [busyText]="l('SavingWithThreeDot' | localize)">
+                        [busyText]="'Saving...'">
                         <i class="fa fa-save"></i>
-                        <span>{{ "Save" | localize }}</span>
+                        <span>Save</span>
                     </button>
                 </div>
             </form>
