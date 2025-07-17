@@ -1805,6 +1805,74 @@ export class CommonLookupServiceProxy {
 }
 
 @Injectable()
+export class CustomerServiceProxy {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @param filter (optional) 
+     * @return Success
+     */
+    getCustomers(filter: string | undefined): Observable<ListResultDtoOfCustomerListDto> {
+        let url_ = this.baseUrl + "/api/services/app/Customer/GetCustomers?";
+        if (filter === null)
+            throw new Error("The parameter 'filter' cannot be null.");
+        else if (filter !== undefined)
+            url_ += "Filter=" + encodeURIComponent("" + filter) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCustomers(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCustomers(<any>response_);
+                } catch (e) {
+                    return <Observable<ListResultDtoOfCustomerListDto>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ListResultDtoOfCustomerListDto>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetCustomers(response: HttpResponseBase): Observable<ListResultDtoOfCustomerListDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ListResultDtoOfCustomerListDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ListResultDtoOfCustomerListDto>(<any>null);
+    }
+}
+
+@Injectable()
 export class DashboardCustomizationServiceProxy {
     private http: HttpClient;
     private baseUrl: string;
@@ -16233,6 +16301,86 @@ export interface ICurrentUserProfileEditDto {
     isGoogleAuthenticatorEnabled: boolean;
 }
 
+export class CustomerListDto implements ICustomerListDto {
+    name!: string | undefined;
+    email!: string | undefined;
+    address!: string | undefined;
+    registrationDate!: DateTime;
+    isDeleted!: boolean;
+    deleterUserId!: number | undefined;
+    deletionTime!: DateTime | undefined;
+    lastModificationTime!: DateTime | undefined;
+    lastModifierUserId!: number | undefined;
+    creationTime!: DateTime;
+    creatorUserId!: number | undefined;
+    id!: number;
+
+    constructor(data?: ICustomerListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.email = _data["email"];
+            this.address = _data["address"];
+            this.registrationDate = _data["registrationDate"] ? DateTime.fromISO(_data["registrationDate"].toString()) : <any>undefined;
+            this.isDeleted = _data["isDeleted"];
+            this.deleterUserId = _data["deleterUserId"];
+            this.deletionTime = _data["deletionTime"] ? DateTime.fromISO(_data["deletionTime"].toString()) : <any>undefined;
+            this.lastModificationTime = _data["lastModificationTime"] ? DateTime.fromISO(_data["lastModificationTime"].toString()) : <any>undefined;
+            this.lastModifierUserId = _data["lastModifierUserId"];
+            this.creationTime = _data["creationTime"] ? DateTime.fromISO(_data["creationTime"].toString()) : <any>undefined;
+            this.creatorUserId = _data["creatorUserId"];
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): CustomerListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["email"] = this.email;
+        data["address"] = this.address;
+        data["registrationDate"] = this.registrationDate ? this.registrationDate.toString() : <any>undefined;
+        data["isDeleted"] = this.isDeleted;
+        data["deleterUserId"] = this.deleterUserId;
+        data["deletionTime"] = this.deletionTime ? this.deletionTime.toString() : <any>undefined;
+        data["lastModificationTime"] = this.lastModificationTime ? this.lastModificationTime.toString() : <any>undefined;
+        data["lastModifierUserId"] = this.lastModifierUserId;
+        data["creationTime"] = this.creationTime ? this.creationTime.toString() : <any>undefined;
+        data["creatorUserId"] = this.creatorUserId;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ICustomerListDto {
+    name: string | undefined;
+    email: string | undefined;
+    address: string | undefined;
+    registrationDate: DateTime;
+    isDeleted: boolean;
+    deleterUserId: number | undefined;
+    deletionTime: DateTime | undefined;
+    lastModificationTime: DateTime | undefined;
+    lastModifierUserId: number | undefined;
+    creationTime: DateTime;
+    creatorUserId: number | undefined;
+    id: number;
+}
+
 export class Dashboard implements IDashboard {
     dashboardName!: string | undefined;
     pages!: Page[] | undefined;
@@ -21488,6 +21636,50 @@ export class ListResultDtoOfChatMessageDto implements IListResultDtoOfChatMessag
 
 export interface IListResultDtoOfChatMessageDto {
     items: ChatMessageDto[] | undefined;
+}
+
+export class ListResultDtoOfCustomerListDto implements IListResultDtoOfCustomerListDto {
+    items!: CustomerListDto[] | undefined;
+
+    constructor(data?: IListResultDtoOfCustomerListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(CustomerListDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ListResultDtoOfCustomerListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ListResultDtoOfCustomerListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IListResultDtoOfCustomerListDto {
+    items: CustomerListDto[] | undefined;
 }
 
 export class ListResultDtoOfDynamicEntityPropertyDto implements IListResultDtoOfDynamicEntityPropertyDto {

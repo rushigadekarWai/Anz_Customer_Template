@@ -1,0 +1,73 @@
+<div class="container-fluid p-4">
+  <div class="customer-header mb-4">
+    <h3 class="page-title">Customers</h3>
+    <div class="header-actions">
+      <div class="search-box">
+        <input type="text" 
+               class="form-control" 
+               placeholder="Search..." 
+               [(ngModel)]="filter"
+               (keyup)="getCustomers()">
+        <i class="fas fa-search search-icon"></i>
+      </div>
+      <button class="btn btn-primary create-btn" (click)="createCustomer()">
+        <i class="fas fa-plus mr-2"></i>Create Customer
+      </button>
+    </div>
+  </div>
+
+  <div class="simple-table-container">
+    <table class="simple-table">
+      <thead>
+        <tr>
+          <th>Customer Name</th>
+          <th>Email</th>
+          <th>Address</th>
+          <th>Registration Date</th>
+          <th class="actions-col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let customer of customers; let i = index">
+          <td>
+            <div class="customer-name">{{ customer.name }}</div>
+          </td>
+          <td>
+            <div class="customer-email">{{ customer.email }}</div>
+          </td>
+          <td>
+            <div class="customer-address">{{ customer.address }}</div>
+          </td>
+          <td>
+            <div class="customer-date">{{ customer.registrationDate | date: 'dd-MM-yyyy' }}</div>
+          </td>
+          <td class="actions-cell">
+            <div class="dropdown">
+              <button class="action-menu-btn" 
+                      (click)="toggleDropdown($event)"
+                      [attr.data-customer-index]="i">
+                <i class="fas fa-ellipsis-h"></i>
+              </button>
+              <div class="simple-dropdown" 
+                   [class.show]="isDropdownOpen === i"
+                   [style.display]="isDropdownOpen === i ? 'block' : 'none'">
+                <div class="dropdown-item" (click)="viewCustomer(customer); closeDropdown()">
+                  <i class="fas fa-eye"></i>
+                  <span>View Details</span>
+                </div>
+                <div class="dropdown-item" (click)="editCustomer(customer); closeDropdown()">
+                  <i class="fas fa-edit"></i>
+                  <span>Edit</span>
+                </div>
+                <div class="dropdown-item delete-item" (click)="deleteCustomer(customer); closeDropdown()">
+                  <i class="fas fa-trash"></i>
+                  <span>Delete</span>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

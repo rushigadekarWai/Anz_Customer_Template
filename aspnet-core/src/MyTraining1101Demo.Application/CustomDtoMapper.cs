@@ -25,6 +25,8 @@ using MyTraining1101Demo.Authorization.Users.Importing.Dto;
 using MyTraining1101Demo.Authorization.Users.Profile.Dto;
 using MyTraining1101Demo.Chat;
 using MyTraining1101Demo.Chat.Dto;
+using MyTraining1101Demo.Customers_Details;
+using MyTraining1101Demo.Customers_serv.DTO;
 using MyTraining1101Demo.DynamicEntityProperties.Dto;
 using MyTraining1101Demo.Editions;
 using MyTraining1101Demo.Editions.Dto;
@@ -162,6 +164,9 @@ namespace MyTraining1101Demo
             
             //User Delegations
             configuration.CreateMap<CreateUserDelegationDto, UserDelegation>();
+
+            configuration.CreateMap<Customer, CustomerListDto>();
+
 
             /* ADD YOUR OWN CUSTOM AUTOMAPPER MAPPINGS HERE */
         }

@@ -29,6 +29,7 @@
     "@angular/router": "^13.1.0",
     "@fullcalendar/core": "^5.9.0",
     "@microsoft/signalr": "^5.0.10",
+    "@popperjs/core": "^2.10.2",
     "@swimlane/ngx-charts": "^19.0.1",
     "abp-ng2-module": "^6.4.0",
     "abp-web-resources": "^5.4.0",
@@ -52,6 +53,7 @@
     "ngx-bootstrap": "^7.1.2",
     "ngx-captcha": "^10.0.0",
     "ngx-image-cropper": "^4.0.1",
+    "ngx-pagination": "^6.0.3",
     "ngx-perfect-scrollbar": "^10.1.1",
     "ngx-spinner": "^12.0.0",
     "object-path": "^0.11.8",
@@ -66,8 +68,7 @@
     "text-mask-addons": "^3.8.0",
     "tslib": "^2.3.1",
     "webdriver-manager": "^12.1.8",
-    "zone.js": "~0.11.4",
-    "@popperjs/core": "^2.10.2"
+    "zone.js": "~0.11.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~13.1.1",
@@ -78,8 +79,8 @@
     "@types/jasmine": "~3.9.1",
     "@types/jasminewd2": "^2.0.10",
     "@types/lodash-es": "^4.17.5",
-    "@types/node": "^16.10.1",
     "@types/luxon": "^2.0.4",
+    "@types/node": "^16.10.1",
     "codelyzer": "^6.0.2",
     "globby": "^11.0.4",
     "gulp": "^4.0.1",

@@ -5,6 +5,7 @@ using MyTraining1101Demo.Authorization.Delegation;
 using MyTraining1101Demo.Authorization.Roles;
 using MyTraining1101Demo.Authorization.Users;
 using MyTraining1101Demo.Chat;
+using MyTraining1101Demo.Customers_Details;
 using MyTraining1101Demo.Editions;
 using MyTraining1101Demo.Friendships;
 using MyTraining1101Demo.MultiTenancy;
@@ -35,6 +36,9 @@ namespace MyTraining1101Demo.EntityFrameworkCore
         public virtual DbSet<SubscriptionPaymentExtensionData> SubscriptionPaymentExtensionDatas { get; set; }
 
         public virtual DbSet<UserDelegation> UserDelegations { get; set; }
+
+        public virtual DbSet<Customer> Customers { get; set; }
+
 
         public MyTraining1101DemoDbContext(DbContextOptions<MyTraining1101DemoDbContext> options)
             : base(options)

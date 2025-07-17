@@ -1,0 +1,248 @@
+/* Simple Clean Design */
+.customer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.search-box {
+  position: relative;
+}
+
+.search-box input {
+  padding: 0.5rem 2.5rem 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  width: 250px;
+  font-size: 0.9rem;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.search-icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.create-btn {
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.create-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+/* Simple Table */
+.simple-table-container {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  overflow: visible;
+  position: relative;
+}
+
+.simple-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  overflow: visible;
+}
+
+.simple-table thead {
+  background-color: #f8f9fa;
+}
+
+.simple-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.875rem;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.simple-table th.actions-col {
+  text-align: center;
+  width: 100px;
+}
+
+.simple-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #f1f3f4;
+  vertical-align: middle;
+  overflow: visible;
+  position: relative;
+}
+
+.simple-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.simple-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Content Styling */
+.customer-name {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.95rem;
+}
+
+.customer-email,
+.customer-address,
+.customer-date {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* Actions */
+.actions-cell {
+  text-align: center;
+  position: relative;
+  overflow: visible !important;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.action-menu-btn {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  color: #6c757d;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.action-menu-btn:hover {
+  background-color: #f8f9fa;
+  color: #495057;
+}
+
+.action-menu-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Simple Dropdown */
+.simple-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  z-index: 9999 !important;
+  min-width: 140px;
+  overflow: visible;
+}
+
+.simple-dropdown.show {
+  display: block !important;
+}
+
+.simple-dropdown .dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 0.875rem;
+  color: #495057;
+}
+
+.simple-dropdown .dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+.simple-dropdown .dropdown-item.delete-item {
+  color: #dc3545;
+}
+
+.simple-dropdown .dropdown-item.delete-item:hover {
+  background-color: #f8d7da;
+}
+
+.simple-dropdown .dropdown-item i {
+  width: 14px;
+  font-size: 0.875rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .customer-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .search-box input {
+    width: 100%;
+  }
+  
+  .simple-table th,
+  .simple-table td {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .simple-dropdown {
+    right: -50px;
+  }
+}
+
+/* Ensure dropdown container allows overflow */
+.customer-header,
+.simple-table-container,
+.simple-table,
+.simple-table tbody,
+.simple-table tr,
+.simple-table td,
+.actions-cell,
+.dropdown {
+  overflow: visible !important;
+}
+
+/* High z-index for dropdown */
+.simple-dropdown {
+  z-index: 999999 !important;
+  position: absolute !important;
+}
