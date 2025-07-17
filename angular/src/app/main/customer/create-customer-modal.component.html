@@ -1,0 +1,51 @@
+<div bsModal #modal="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #customerForm="ngForm" novalidate (ngSubmit)="save()">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span>{{ "CreateNewCustomer" | localize }}</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>{{ "Name" | localize }}</label>
+                        <input #nameInput class="form-control" type="text" name="name" [(ngModel)]="customer.name" required maxlength="32">
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ "Email" | localize }}</label>
+                        <input class="form-control" type="email" name="email" [(ngModel)]="customer.email" required maxlength="255" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{1,})+$">
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ "Address" | localize }}</label>
+                        <input class="form-control" type="text" name="address" [(ngModel)]="customer.address" maxlength="255">
+                    </div>
+
+                    <div class="form-group">
+                        <label>{{ "RegistrationDate" | localize }}</label>
+                        <input class="form-control" type="date" name="registrationDate" [(ngModel)]="customer.registrationDate" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-secondary" (click)="close()">
+                        {{ "Cancel" | localize }}
+                    </button>
+                    <button type="submit" class="btn btn-primary"
+                        [disabled]="!customerForm.form.valid"
+                        [buttonBusy]="saving"
+                        [busyText]="l('SavingWithThreeDot' | localize)">
+                        <i class="fa fa-save"></i>
+                        <span>{{ "Save" | localize }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

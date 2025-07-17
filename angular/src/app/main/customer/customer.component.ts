@@ -1,7 +1,8 @@
-import { Component, Injector, OnInit, HostListener } from '@angular/core';
+import { Component, Injector, OnInit, HostListener, ViewChild } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { CustomerServiceProxy, CustomerListDto, ListResultDtoOfCustomerListDto } from '@shared/service-proxies/service-proxies';
+import { CreateCustomerModalComponent } from './create-customer-modal.component';
 
 @Component({
     templateUrl: './customer.component.html',
@@ -9,6 +10,8 @@ import { CustomerServiceProxy, CustomerListDto, ListResultDtoOfCustomerListDto }
     animations: [appModuleAnimation()]
 })
 export class CustomerComponent extends AppComponentBase implements OnInit {
+
+    @ViewChild('createCustomerModal', { static: true }) createCustomerModal: CreateCustomerModalComponent;
 
     customers: CustomerListDto[] = [];
     paginatedCustomers: CustomerListDto[] = [];
@@ -91,11 +94,11 @@ export class CustomerComponent extends AppComponentBase implements OnInit {
     }
 
     createCustomer(): void {
-        // Implement create customer logic
-        console.log('Create new customer');
-        this.message.info('Create Customer functionality - Navigate to create form');
-        // You can navigate to create customer page
-        // this.router.navigate(['/app/customer/create']);
+        this.createCustomerModal.show();
+    }
+
+    customerCreated(): void {
+        this.getCustomers();
     }
 
     viewCustomer(customer: CustomerListDto): void {

@@ -40,5 +40,12 @@ namespace MyTraining1101Demo.Customer_data
 
             return new ListResultDto<CustomerListDto>(customerDtos);
         }
+
+        public async Task CreateCustomer(CreateCustomerInput input)
+        {
+            var customer = ObjectMapper.Map<Customer>(input);
+            await _customerRepository.InsertAsync(customer);
+        }
+
     }
 }

@@ -167,6 +167,9 @@ namespace MyTraining1101Demo
 
             configuration.CreateMap<Customer, CustomerListDto>();
 
+            configuration.CreateMap<CreateCustomerInput, Customer>();
+
+
 
             /* ADD YOUR OWN CUSTOM AUTOMAPPER MAPPINGS HERE */
         }

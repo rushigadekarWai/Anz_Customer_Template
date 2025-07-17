@@ -11,5 +11,8 @@ namespace MyTraining1101Demo.Customers_serv
     public interface ICustomerAppService : IApplicationService
     {
         ListResultDto<CustomerListDto> GetCustomers(GetCustomerInput input);
+
+        Task CreateCustomer(CreateCustomerInput input);
+
     }
 }
