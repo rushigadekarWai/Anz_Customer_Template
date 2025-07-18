@@ -18,6 +18,7 @@ namespace MyTraining1101Demo.Migrations.Seed.Host
             new HostRoleAndUserCreator(_context).Create();
             new DefaultSettingsCreator(_context).Create();
             new InitialCustomerCreator(_context).Create();
+            new InitialCustomerUserCreator(_context).Create();
 
             _context.SaveChanges();
         }

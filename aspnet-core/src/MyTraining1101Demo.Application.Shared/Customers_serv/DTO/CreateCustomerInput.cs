@@ -23,5 +23,7 @@ namespace MyTraining1101Demo.Customers_serv.DTO
 
         [Required]
         public DateTime RegistrationDate { get; set; }
+
+        public List<long> UserIds { get; set; }
     }
 }

@@ -34,7 +34,6 @@
                                    [(ngModel)]="customer.email" 
                                    required 
                                    maxlength="255" 
-                                   pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{1,})+$"
                                    placeholder="Enter customer email"
                                    #emailInput #emailModel="ngModel">
                             <div class="validation-message" *ngIf="emailModel.invalid && emailModel.touched">
@@ -68,6 +67,33 @@
                                    #dateInput #dateModel="ngModel">
                             <div class="validation-message" *ngIf="dateModel.invalid && dateModel.touched">
                                 Please enter your registration Date
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add Users Section -->
+                    <div class="users-section">
+                        <label class="section-label">Add Users</label>
+                        <div class="user-controls">
+                            <select class="form-control user-select" [(ngModel)]="selectedUserId" name="selectedUser">
+                                <option value="">Select user</option>
+                                <option *ngFor="let user of getAvailableUsers()" [value]="user.id">
+                                    {{ user.name || user.userName }}
+                                </option>
+                            </select>
+                            <button type="button" class="btn btn-add-user" (click)="addUser()" [disabled]="!selectedUserId">
+                                <i class="fa fa-plus"></i>
+                                Add User
+                            </button>
+                        </div>
+                        
+                        <!-- Selected Users List -->
+                        <div class="selected-users" *ngIf="selectedUsers.length > 0">
+                            <div class="selected-user-item" *ngFor="let user of selectedUsers">
+                                <span class="user-name">{{ user.name || user.userName }}</span>
+                                <button type="button" class="btn-remove-user" (click)="removeUser(user)">
+                                    <i class="fa fa-times"></i>
+                                </button>
                             </div>
                         </div>
                     </div>

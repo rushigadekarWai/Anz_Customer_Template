@@ -38,6 +38,7 @@ namespace MyTraining1101Demo.EntityFrameworkCore
         public virtual DbSet<UserDelegation> UserDelegations { get; set; }
 
         public virtual DbSet<Customer> Customers { get; set; }
+        public virtual DbSet<CustomerUser> CustomerUsers { get; set; }
 
 
         public MyTraining1101DemoDbContext(DbContextOptions<MyTraining1101DemoDbContext> options)

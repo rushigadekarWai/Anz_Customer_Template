@@ -40,12 +40,18 @@ export class CustomerComponent extends AppComponentBase implements OnInit {
     }
 
     getCustomers(): void {
-        this._customerService.getCustomers(this.filter).subscribe((result: ListResultDtoOfCustomerListDto) => {
-            this.customers = result?.items || [];
-            this.totalItems = this.customers.length;
-            this.calculatePagination();
-            this.updatePaginatedCustomers();
-        });
+        this._customerService.getCustomers(this.filter).subscribe(
+            (result: ListResultDtoOfCustomerListDto) => {
+                this.customers = result?.items || [];
+                this.totalItems = this.customers.length;
+                this.calculatePagination();
+                this.updatePaginatedCustomers();
+            },
+            (error) => {
+                console.error('Error loading customers:', error);
+                this.notify.error('Failed to load customers');
+            }
+        );
     }
 
     calculatePagination(): void {
@@ -128,12 +134,18 @@ export class CustomerComponent extends AppComponentBase implements OnInit {
             this.l('AreYouSure'),
             (isConfirmed: boolean) => {
                 if (isConfirmed) {
-                    this._customerService.deleteCustomer(customer.id).subscribe(() => {
-                        this.notify.info(this.l('SuccessfullyDeleted'));
-                        _remove(this.customers, customer); // assumes 'customers' is your list array
-                        this.calculatePagination();
-                        this.updatePaginatedCustomers();
-                    });
+                    this._customerService.deleteCustomer(customer.id).subscribe(
+                        () => {
+                            this.notify.info(this.l('SuccessfullyDeleted'));
+                            _remove(this.customers, customer);
+                            this.calculatePagination();
+                            this.updatePaginatedCustomers();
+                        },
+                        (error) => {
+                            console.error('Error deleting customer:', error);
+                            this.notify.error('Failed to delete customer');
+                        }
+                    );
                 }
             }
         );

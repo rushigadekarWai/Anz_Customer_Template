@@ -28,5 +28,13 @@ namespace MyTraining1101Demo.Customers_Details
 
         [Required]
         public virtual DateTime RegistrationDate { get; set; }
+
+        public virtual ICollection<CustomerUser> CustomerUsers { get; set; }
+
+        public Customer()
+        {
+            CustomerUsers = new List<CustomerUser>();
+        }
+
     }
 }

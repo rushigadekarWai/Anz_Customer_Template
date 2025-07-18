@@ -121,6 +121,33 @@
   font-size: 14px;
 }
 
+/* Dropdown specific styling */
+select.form-control {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px 12px;
+  padding-right: 40px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  border: 1px solid #ced4da !important;
+  box-sizing: border-box;
+  background-clip: padding-box;
+}
+
+/* Option styling */
+select.form-control option {
+  padding: 8px 12px;
+  background-color: #ffffff;
+  color: #495057;
+}
+
+select.form-control option:hover {
+  background-color: #f8f9fa;
+}
+
 /* Validation Messages */
 .validation-message {
   margin-top: 4px;
@@ -246,4 +273,132 @@
   .btn {
     width: 100%;
   }
+
+  .user-controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .user-select {
+    margin-bottom: 0;
+  }
+}
+
+/* Users Section */
+.users-section {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.section-label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 500;
+  color: #555555;
+  font-size: 14px;
+}
+
+.user-controls {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.user-select {
+  flex: 1;
+  max-width: 200px;
+  z-index: 1055;
+  position: relative;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px 12px;
+  padding-right: 40px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border: 1px solid #ced4da !important;
+  box-sizing: border-box;
+  background-clip: padding-box;
+  background-color: #ffffff;
+}
+
+.btn-add-user {
+  background-color: #fd7f6f;
+  color: #ffffff;
+  border: 1px solid #fd7f6f;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  height: 42px;
+}
+
+.btn-add-user:hover:not(:disabled) {
+  background-color: #fc6c5c;
+  border-color: #fc6c5c;
+}
+
+.btn-add-user:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Selected Users List */
+.selected-users {
+  max-height: 120px;
+  overflow-y: auto;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 8px;
+  background-color: #f8f9fa;
+}
+
+.selected-user-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  background-color: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.selected-user-item:last-child {
+  margin-bottom: 0;
+}
+
+.user-name {
+  color: #495057;
+  font-weight: 500;
+}
+
+.btn-remove-user {
+  background: none;
+  border: none;
+  color: #dc3545;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-remove-user:hover {
+  background-color: #f8d7da;
+  color: #721c24;
 }

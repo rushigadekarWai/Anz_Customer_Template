@@ -15791,6 +15791,7 @@ export class CreateCustomerInput implements ICreateCustomerInput {
     email!: string;
     address!: string;
     registrationDate!: DateTime;
+    userIds!: number[] | undefined;
 
     constructor(data?: ICreateCustomerInput) {
         if (data) {
@@ -15807,6 +15808,11 @@ export class CreateCustomerInput implements ICreateCustomerInput {
             this.email = _data["email"];
             this.address = _data["address"];
             this.registrationDate = _data["registrationDate"] ? DateTime.fromISO(_data["registrationDate"].toString()) : <any>undefined;
+            if (Array.isArray(_data["userIds"])) {
+                this.userIds = [] as any;
+                for (let item of _data["userIds"])
+                    this.userIds!.push(item);
+            }
         }
     }
 
@@ -15823,6 +15829,11 @@ export class CreateCustomerInput implements ICreateCustomerInput {
         data["email"] = this.email;
         data["address"] = this.address;
         data["registrationDate"] = this.registrationDate ? this.registrationDate.toString() : <any>undefined;
+        if (Array.isArray(this.userIds)) {
+            data["userIds"] = [];
+            for (let item of this.userIds)
+                data["userIds"].push(item);
+        }
         return data; 
     }
 }
@@ -15832,6 +15843,7 @@ export interface ICreateCustomerInput {
     email: string;
     address: string;
     registrationDate: DateTime;
+    userIds: number[] | undefined;
 }
 
 export class CreateEditionDto implements ICreateEditionDto {
@@ -16458,6 +16470,7 @@ export class CustomerListDto implements ICustomerListDto {
     email!: string | undefined;
     address!: string | undefined;
     registrationDate!: DateTime;
+    customerUsers!: CustomerUserInCustomerListDto[] | undefined;
     isDeleted!: boolean;
     deleterUserId!: number | undefined;
     deletionTime!: DateTime | undefined;
@@ -16482,6 +16495,11 @@ export class CustomerListDto implements ICustomerListDto {
             this.email = _data["email"];
             this.address = _data["address"];
             this.registrationDate = _data["registrationDate"] ? DateTime.fromISO(_data["registrationDate"].toString()) : <any>undefined;
+            if (Array.isArray(_data["customerUsers"])) {
+                this.customerUsers = [] as any;
+                for (let item of _data["customerUsers"])
+                    this.customerUsers!.push(CustomerUserInCustomerListDto.fromJS(item));
+            }
             this.isDeleted = _data["isDeleted"];
             this.deleterUserId = _data["deleterUserId"];
             this.deletionTime = _data["deletionTime"] ? DateTime.fromISO(_data["deletionTime"].toString()) : <any>undefined;
@@ -16506,6 +16524,11 @@ export class CustomerListDto implements ICustomerListDto {
         data["email"] = this.email;
         data["address"] = this.address;
         data["registrationDate"] = this.registrationDate ? this.registrationDate.toString() : <any>undefined;
+        if (Array.isArray(this.customerUsers)) {
+            data["customerUsers"] = [];
+            for (let item of this.customerUsers)
+                data["customerUsers"].push(item.toJSON());
+        }
         data["isDeleted"] = this.isDeleted;
         data["deleterUserId"] = this.deleterUserId;
         data["deletionTime"] = this.deletionTime ? this.deletionTime.toString() : <any>undefined;
@@ -16523,6 +16546,7 @@ export interface ICustomerListDto {
     email: string | undefined;
     address: string | undefined;
     registrationDate: DateTime;
+    customerUsers: CustomerUserInCustomerListDto[] | undefined;
     isDeleted: boolean;
     deleterUserId: number | undefined;
     deletionTime: DateTime | undefined;
@@ -16530,6 +16554,58 @@ export interface ICustomerListDto {
     lastModifierUserId: number | undefined;
     creationTime: DateTime;
     creatorUserId: number | undefined;
+    id: number;
+}
+
+export class CustomerUserInCustomerListDto implements ICustomerUserInCustomerListDto {
+    userId!: number;
+    userName!: string | undefined;
+    emailAddress!: string | undefined;
+    creationTime!: DateTime;
+    id!: number;
+
+    constructor(data?: ICustomerUserInCustomerListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.userName = _data["userName"];
+            this.emailAddress = _data["emailAddress"];
+            this.creationTime = _data["creationTime"] ? DateTime.fromISO(_data["creationTime"].toString()) : <any>undefined;
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): CustomerUserInCustomerListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerUserInCustomerListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["userName"] = this.userName;
+        data["emailAddress"] = this.emailAddress;
+        data["creationTime"] = this.creationTime ? this.creationTime.toString() : <any>undefined;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ICustomerUserInCustomerListDto {
+    userId: number;
+    userName: string | undefined;
+    emailAddress: string | undefined;
+    creationTime: DateTime;
     id: number;
 }
 
