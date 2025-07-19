@@ -132,17 +132,21 @@ export class CustomerComponent extends AppComponentBase implements OnInit {
         this.message.confirm(
             this.l('AreYouSureToDeleteTheCustomer', customer.name),
             this.l('AreYouSure'),
-            (isConfirmed: boolean) => {
-                if (isConfirmed) {
-                    this._customerService.deleteCustomer(customer.id).subscribe(
-                        () => {
-                            this.notify.info(this.l('SuccessfullyDeleted'));
-                            _remove(this.customers, customer);
-                            this.calculatePagination();
-                            this.updatePaginatedCustomers();
-                        },
-                        (error) => {
-                            console.error('Error deleting customer:', error);
+             (isConfirmed: boolean) => {
+           if (isConfirmed) {
+                this._customerService.deleteCustomer(customer.id).subscribe(
+                    () => {
+                        this.notify.info(this.l('SuccessfullyDeleted'));
+
+                        // ✅ Safer delete: use ID match to remove the customer from the local list
+                        _remove(this.customers, (c) => c.id === customer.id);
+
+                        // ✅ Refresh UI after delete
+                        this.calculatePagination();
+                        this.updatePaginatedCustomers();
+                    },
+                    (error) => {
+                        console.error('Error deleting customer:', error);
                             this.notify.error('Failed to delete customer');
                         }
                     );
@@ -150,6 +154,35 @@ export class CustomerComponent extends AppComponentBase implements OnInit {
             }
         );
     }
+    // isDeleting = false;
+
+// deleteCustomer(customer: CustomerListDto): void {
+//     this.message.confirm(
+//         this.l('AreYouSureToDeleteTheCustomer', customer.name),
+//         this.l('AreYouSure'),
+//         (isConfirmed: boolean) => {
+//             if (isConfirmed) {
+//                 this.isDeleting = true; // Start loader
+//                 this._customerService.deleteCustomer(customer.id).subscribe(
+//                     () => {
+//                         this.notify.info(this.l('SuccessfullyDeleted'));
+//                         _remove(this.customers, customer);
+//                         this.calculatePagination();
+//                         this.updatePaginatedCustomers();
+//                     },
+//                     (error) => {
+//                         console.error('Error deleting customer:', error);
+//                         this.notify.error(this.l('FailedToDeleteCustomer'));
+//                     },
+//                     () => {
+//                         this.isDeleting = false; // Stop loader
+//                     }
+//                 );
+//             }
+//         }
+//     );
+// }
+
 
 
     toggleDropdown(event: Event): void {

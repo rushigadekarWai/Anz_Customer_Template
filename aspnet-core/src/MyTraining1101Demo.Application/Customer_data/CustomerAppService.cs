@@ -101,10 +101,47 @@ namespace MyTraining1101Demo.Customer_data
 
 
         [AbpAuthorize(AppPermissions.Pages_Tenant_Customers_DeleteCustomer)]
+        //public async Task DeleteCustomer(EntityDto input)
+        //{
+        //    await _customerRepository.DeleteAsync(input.Id);
+        //}
+        //public async Task DeleteCustomer(EntityDto input)
+        //{
+        //    // First, delete related CustomerUser records
+        //    var relatedCustomerUsers = await _customerUserRepository
+        //        .GetAll()
+        //        .Where(cu => cu.CustomerId == input.Id)
+        //        .ToListAsync();
+
+        //    foreach (var cu in relatedCustomerUsers)
+        //    {
+        //        await _customerUserRepository.DeleteAsync(cu.Id);
+        //    }
+
+        //    // Now delete the customer
+        //    await _customerRepository.DeleteAsync(input.Id);
+        //}
         public async Task DeleteCustomer(EntityDto input)
         {
+            // Step 1: Delete related CustomerUser entries
+            var relatedCustomerUsers = await _customerUserRepository
+                .GetAll()
+                .Where(cu => cu.CustomerId == input.Id)
+                .ToListAsync();
+
+            foreach (var cu in relatedCustomerUsers)
+            {
+                await _customerUserRepository.DeleteAsync(cu);
+            }
+
+            // Step 2: Delete the Customer itself
             await _customerRepository.DeleteAsync(input.Id);
+
+            // Step 3: Explicitly commit changes
+            await CurrentUnitOfWork.SaveChangesAsync();
         }
+
+
 
 
     }
