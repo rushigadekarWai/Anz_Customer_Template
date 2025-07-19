@@ -6,8 +6,12 @@
 /* Modal Dialog */
 .modal-dialog {
   margin: 30px auto;
-  max-width: 650px;
+  max-width: 900px;
   width: 95%;
+}
+
+.modal-dialog.modal-xl {
+  max-width: 1000px;
 }
 
 /* Modal Content */
@@ -15,7 +19,7 @@
   border: none;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
+  overflow: visible;
   background: #ffffff;
 }
 
@@ -63,12 +67,13 @@
 .modal-body {
   padding: 25px 30px;
   background: #ffffff;
+  overflow: visible;
 }
 
 /* Form Layout - 2x2 Grid */
 .form-row {
   display: flex;
-  gap: 20px;
+  gap: 25px;
   margin-bottom: 20px;
 }
 
@@ -79,6 +84,7 @@
 .form-group {
   flex: 1;
   margin-bottom: 0;
+  min-width: 0; /* Allows flex items to shrink below their content size */
 }
 
 /* Labels */
@@ -135,6 +141,13 @@ select.form-control {
   border: 1px solid #ced4da !important;
   box-sizing: border-box;
   background-clip: padding-box;
+  background-color: #ffffff !important;
+}
+
+select.form-control:focus {
+  border: 2px solid #007bff !important;
+  outline: none;
+  z-index: 1060;
 }
 
 /* Option styling */
@@ -142,10 +155,25 @@ select.form-control option {
   padding: 8px 12px;
   background-color: #ffffff;
   color: #495057;
+  border: none;
+  font-size: 14px;
 }
 
 select.form-control option:hover {
   background-color: #f8f9fa;
+}
+
+/* Fix dropdown opening issues */
+select.form-control {
+  position: relative;
+  z-index: 1055;
+}
+
+select.form-control:focus {
+  border: 2px solid #007bff !important;
+  outline: none;
+  z-index: 1065;
+  position: relative;
 }
 
 /* Validation Messages */
@@ -244,10 +272,18 @@ select.form-control option:hover {
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .modal-dialog {
     margin: 15px;
     width: calc(100% - 30px);
+    max-width: 95%;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-dialog {
+    margin: 10px;
+    width: calc(100% - 20px);
   }
   
   .form-row {
@@ -281,13 +317,17 @@ select.form-control option:hover {
   
   .user-select {
     margin-bottom: 0;
+    max-width: 100%;
+    min-width: 100%;
   }
 }
 
 /* Users Section */
 .users-section {
   margin-top: 25px;
+  margin-bottom: 30px;
   padding-top: 20px;
+  padding-bottom: 15px;
   border-top: 1px solid #e9ecef;
 }
 
@@ -301,14 +341,15 @@ select.form-control option:hover {
 
 .user-controls {
   display: flex;
-  gap: 12px;
+  gap: 15px;
   align-items: flex-start;
   margin-bottom: 15px;
 }
 
 .user-select {
   flex: 1;
-  max-width: 200px;
+  min-width: 250px;
+  max-width: 350px;
   z-index: 1055;
   position: relative;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
@@ -322,7 +363,20 @@ select.form-control option:hover {
   border: 1px solid #ced4da !important;
   box-sizing: border-box;
   background-clip: padding-box;
-  background-color: #ffffff;
+  background-color: #ffffff !important;
+}
+
+.user-select:focus {
+  border: 2px solid #007bff !important;
+  outline: none;
+  z-index: 1065;
+  position: relative;
+}
+
+/* Ensure dropdown options are visible */
+.user-controls {
+  position: relative;
+  z-index: 1050;
 }
 
 .btn-add-user {

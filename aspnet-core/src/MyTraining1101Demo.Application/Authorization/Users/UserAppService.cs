@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Threading.Tasks;
-using Abp.Application.Services.Dto;
-using Abp.Configuration;
+﻿using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.Authorization.Roles;
 using Abp.Authorization.Users;
+using Abp.Configuration;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
@@ -26,10 +19,18 @@ using MyTraining1101Demo.Authorization.Permissions.Dto;
 using MyTraining1101Demo.Authorization.Roles;
 using MyTraining1101Demo.Authorization.Users.Dto;
 using MyTraining1101Demo.Authorization.Users.Exporting;
+using MyTraining1101Demo.Customers_Details;
 using MyTraining1101Demo.Dto;
 using MyTraining1101Demo.Notifications;
-using MyTraining1101Demo.Url;
 using MyTraining1101Demo.Organizations.Dto;
+using MyTraining1101Demo.Url;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Threading.Tasks;
 
 namespace MyTraining1101Demo.Authorization.Users
 {
@@ -56,6 +57,10 @@ namespace MyTraining1101Demo.Authorization.Users
         private readonly IRepository<UserOrganizationUnit, long> _userOrganizationUnitRepository;
         private readonly IRepository<OrganizationUnitRole, long> _organizationUnitRoleRepository;
 
+        private readonly IRepository<CustomerUser, long> _abpCustomerUserRepository;
+
+
+
         public UserAppService(
             RoleManager roleManager,
             IUserEmailer userEmailer,
@@ -73,7 +78,8 @@ namespace MyTraining1101Demo.Authorization.Users
             IRoleManagementConfig roleManagementConfig,
             UserManager userManager,
             IRepository<UserOrganizationUnit, long> userOrganizationUnitRepository,
-            IRepository<OrganizationUnitRole, long> organizationUnitRoleRepository)
+            IRepository<OrganizationUnitRole, long> organizationUnitRoleRepository,
+            IRepository<CustomerUser, long> abpCustomerUserRepository)
         {
             _roleManager = roleManager;
             _userEmailer = userEmailer;
@@ -92,6 +98,7 @@ namespace MyTraining1101Demo.Authorization.Users
             _userOrganizationUnitRepository = userOrganizationUnitRepository;
             _organizationUnitRoleRepository = organizationUnitRoleRepository;
             _roleRepository = roleRepository;
+            _abpCustomerUserRepository = abpCustomerUserRepository;
 
             AppUrlService = NullAppUrlService.Instance;
         }
@@ -116,6 +123,39 @@ namespace MyTraining1101Demo.Authorization.Users
                 userListDtos
             );
         }
+
+        [HttpPost]
+        public async Task<PagedResultDto<UserListDto>> GetAbpUsers(GetUsersInput input)
+        {
+           
+            var assignedUserIds = await _abpCustomerUserRepository
+                .GetAll()
+                .Select(cu => cu.UserId)
+                .Distinct()
+                .ToListAsync();
+
+         
+            var query = GetUsersFilteredQuery(input)
+                .Where(u => !assignedUserIds.Contains(u.Id));
+
+           
+            var userCount = await query.CountAsync();
+
+            var users = await query
+                .OrderBy(input.Sorting ?? "Name") 
+                .PageBy(input)
+                .ToListAsync();
+
+            
+            var userListDtos = ObjectMapper.Map<List<UserListDto>>(users);
+            await FillRoleNames(userListDtos);
+
+            return new PagedResultDto<UserListDto>(
+                userCount,
+                userListDtos
+            );
+        }
+
 
         public async Task<FileDto> GetUsersToExcel(GetUsersToExcelInput input)
         {
