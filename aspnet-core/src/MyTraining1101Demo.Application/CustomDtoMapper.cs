@@ -43,6 +43,7 @@ using MyTraining1101Demo.Notifications.Dto;
 using MyTraining1101Demo.Organizations.Dto;
 using MyTraining1101Demo.Sessions.Dto;
 using MyTraining1101Demo.WebHooks.Dto;
+using System.Linq;
 
 namespace MyTraining1101Demo
 {
@@ -175,6 +176,11 @@ namespace MyTraining1101Demo
      .ForMember(dest => dest.EmailAddress, opt => opt.MapFrom(src => src.User.EmailAddress))
      .ForMember(dest => dest.CreationTime, opt => opt.MapFrom(src => src.CreationTime));
 
+            configuration.CreateMap<Customer, GetCustomerForEditOutput>()
+    .ForMember(dest => dest.UserIds, opt => opt.MapFrom(src => src.CustomerUsers.Select(cu => cu.UserId)));
+
+            configuration.CreateMap<GetCustomerForEditOutput, EditCustomerInput>();
+            configuration.CreateMap<EditCustomerInput, Customer>();
 
 
             /* ADD YOUR OWN CUSTOM AUTOMAPPER MAPPINGS HERE */

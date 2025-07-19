@@ -3,6 +3,7 @@ import { AppComponentBase } from '@shared/common/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { CustomerServiceProxy, CustomerListDto, ListResultDtoOfCustomerListDto } from '@shared/service-proxies/service-proxies';
 import { CreateCustomerModalComponent } from './create-customer-modal.component';
+import { EditCustomerModalComponent } from './edit-customer-modal.component';
 import { remove as _remove } from 'lodash-es';
 
 
@@ -14,6 +15,7 @@ import { remove as _remove } from 'lodash-es';
 export class CustomerComponent extends AppComponentBase implements OnInit {
 
     @ViewChild('createCustomerModal', { static: true }) createCustomerModal: CreateCustomerModalComponent;
+    @ViewChild('editCustomerModal', { static: true }) editCustomerModal: EditCustomerModalComponent;
 
     customers: CustomerListDto[] = [];
     paginatedCustomers: CustomerListDto[] = [];
@@ -123,9 +125,8 @@ export class CustomerComponent extends AppComponentBase implements OnInit {
     }
 
     editCustomer(customer: CustomerListDto): void {
-        // Implement edit customer logic
-        console.log('Edit customer:', customer);
-        this.message.info('Edit customer: ' + customer.name);
+        // Open the edit modal and pass the customer ID
+        this.editCustomerModal.show(customer.id);
     }
 
     deleteCustomer(customer: CustomerListDto): void {

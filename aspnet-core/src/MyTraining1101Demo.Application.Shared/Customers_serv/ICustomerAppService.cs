@@ -16,6 +16,8 @@ namespace MyTraining1101Demo.Customers_serv
 
         Task DeleteCustomer(EntityDto input);
 
+        Task<GetCustomerForEditOutput> GetCustomerForEdit(EntityDto input);
+        Task EditCustomer(EditCustomerInput input);
 
     }
 }

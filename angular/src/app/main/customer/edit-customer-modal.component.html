@@ -1,0 +1,82 @@
+<div bsModal #modal="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true" [config]="{backdrop: 'static'}">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form *ngIf="active" #customerForm="ngForm" novalidate (ngSubmit)="save()">
+        <div class="modal-header">
+          <h4 class="modal-title">
+            <span>{{"EditCustomer" | localize}}</span>
+          </h4>
+          <button type="button" class="close" (click)="close()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>          
+        </div>
+
+        <div class="modal-body">
+          <!-- Name -->
+          <div class="form-group">
+            <label>{{"Name" | localize}}</label>
+            <input class="form-control" type="text" name="name" [(ngModel)]="customer.name" required maxlength="64">
+          </div>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label>{{"Email" | localize}}</label>
+            <input class="form-control" type="email" name="email" [(ngModel)]="customer.email" required maxlength="255">
+          </div>
+
+          <!-- Address -->
+          <div class="form-group">
+            <label>{{"Address" | localize}}</label>
+            <input class="form-control" type="text" name="address" [(ngModel)]="customer.address" required maxlength="255">
+          </div>
+
+          <!-- Registration Date -->
+          <div class="form-group">
+            <label>{{"RegistrationDate" | localize}}</label>
+            <input class="form-control" type="date" name="registrationDate" [(ngModel)]="customer.registrationDate" required>
+          </div>
+
+          <!-- Assigned ABP Users (Add/Remove like create modal) -->
+          <div class="users-section">
+            <label class="section-label">{{"AssignUsers" | localize}}</label>
+            <div class="user-controls mb-2">
+              <select class="form-control user-select" [(ngModel)]="selectedUserId" name="selectedUser">
+                <option value="">{{'Select user' | localize}}</option>
+                <option *ngFor="let user of getAvailableUsers()" [value]="user.id">
+                  {{ user.name || user.userName }}
+                </option>
+              </select>
+              <button type="button" class="btn btn-add-user" (click)="addUser()" [disabled]="!selectedUserId">
+                <i class="fa fa-plus"></i>
+                {{'Add User' | localize}}
+              </button>
+            </div>
+            <div class="selected-users">
+              <label class="selected-label">{{'Assigned Users' | localize}}</label>
+              <ng-container *ngIf="selectedUsers.length > 0; else noUsers">
+                <div class="selected-user-item" *ngFor="let user of selectedUsers">
+                  <span class="user-name">{{ user.name || user.userName }}</span>
+                  <button type="button" class="btn-remove-user" (click)="removeUser(user)">
+                    <i class="fa fa-times"></i>
+                  </button>
+                </div>
+              </ng-container>
+              <ng-template #noUsers>
+                <div class="no-users-assigned text-muted" style="font-size: 13px; padding: 4px 0 0 2px;">
+                  {{'No users assigned yet.' | localize}}
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="close()">{{"Cancel" | localize}}</button>
+          <button type="submit" class="btn btn-primary" [disabled]="!customerForm.form.valid || saving" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot' | localize)">
+            <i class="fa fa-save"></i> <span>{{"Save" | localize}}</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -79,6 +79,9 @@
 
         public const string Pages_Administration_Tenant_SubscriptionManagement = "Pages.Administration.Tenant.SubscriptionManagement";
 
+        public const string Pages_Tenant_Customers_EditCustomer = "Pages.Tenant.Customers.EditCustomer";
+
+
         //HOST-SPECIFIC PERMISSIONS
 
         public const string Pages_Editions = "Pages.Editions";

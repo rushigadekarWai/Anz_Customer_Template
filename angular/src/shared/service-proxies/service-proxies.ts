@@ -1974,6 +1974,114 @@ export class CustomerServiceProxy {
         }
         return _observableOf<void>(<any>null);
     }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getCustomerForEdit(id: number | undefined): Observable<GetCustomerForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/Customer/GetCustomerForEdit?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCustomerForEdit(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCustomerForEdit(<any>response_);
+                } catch (e) {
+                    return <Observable<GetCustomerForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<GetCustomerForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetCustomerForEdit(response: HttpResponseBase): Observable<GetCustomerForEditOutput> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetCustomerForEditOutput.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetCustomerForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    editCustomer(body: EditCustomerInput | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/services/app/Customer/EditCustomer";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEditCustomer(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEditCustomer(<any>response_);
+                } catch (e) {
+                    return <Observable<void>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<void>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processEditCustomer(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return _observableOf<void>(<any>null);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<void>(<any>null);
+    }
 }
 
 @Injectable()
@@ -17037,6 +17145,70 @@ export interface IDynamicPropertyValueDto {
     id: number;
 }
 
+export class EditCustomerInput implements IEditCustomerInput {
+    name!: string;
+    email!: string;
+    address!: string;
+    registrationDate!: DateTime;
+    userIds!: number[] | undefined;
+    id!: number;
+
+    constructor(data?: IEditCustomerInput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.email = _data["email"];
+            this.address = _data["address"];
+            this.registrationDate = _data["registrationDate"] ? DateTime.fromISO(_data["registrationDate"].toString()) : <any>undefined;
+            if (Array.isArray(_data["userIds"])) {
+                this.userIds = [] as any;
+                for (let item of _data["userIds"])
+                    this.userIds!.push(item);
+            }
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): EditCustomerInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new EditCustomerInput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["email"] = this.email;
+        data["address"] = this.address;
+        data["registrationDate"] = this.registrationDate ? this.registrationDate.toString() : <any>undefined;
+        if (Array.isArray(this.userIds)) {
+            data["userIds"] = [];
+            for (let item of this.userIds)
+                data["userIds"].push(item);
+        }
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IEditCustomerInput {
+    name: string;
+    email: string;
+    address: string;
+    registrationDate: DateTime;
+    userIds: number[] | undefined;
+    id: number;
+}
+
 export class EditionCreateDto implements IEditionCreateDto {
     id!: number | undefined;
     displayName!: string;
@@ -19217,6 +19389,70 @@ export interface IGetCurrentLoginInformationsOutput {
     impersonatorTenant: TenantLoginInfoDto;
     application: ApplicationInfoDto;
     theme: UiCustomizationSettingsDto;
+}
+
+export class GetCustomerForEditOutput implements IGetCustomerForEditOutput {
+    name!: string | undefined;
+    email!: string | undefined;
+    address!: string | undefined;
+    registrationDate!: DateTime;
+    userIds!: number[] | undefined;
+    id!: number;
+
+    constructor(data?: IGetCustomerForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.email = _data["email"];
+            this.address = _data["address"];
+            this.registrationDate = _data["registrationDate"] ? DateTime.fromISO(_data["registrationDate"].toString()) : <any>undefined;
+            if (Array.isArray(_data["userIds"])) {
+                this.userIds = [] as any;
+                for (let item of _data["userIds"])
+                    this.userIds!.push(item);
+            }
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): GetCustomerForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetCustomerForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["email"] = this.email;
+        data["address"] = this.address;
+        data["registrationDate"] = this.registrationDate ? this.registrationDate.toString() : <any>undefined;
+        if (Array.isArray(this.userIds)) {
+            data["userIds"] = [];
+            for (let item of this.userIds)
+                data["userIds"].push(item);
+        }
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IGetCustomerForEditOutput {
+    name: string | undefined;
+    email: string | undefined;
+    address: string | undefined;
+    registrationDate: DateTime;
+    userIds: number[] | undefined;
+    id: number;
 }
 
 export class GetDailySalesOutput implements IGetDailySalesOutput {

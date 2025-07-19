@@ -3,6 +3,7 @@ using Abp.Authorization;
 using Abp.Collections.Extensions;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
+using Abp.UI;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MyTraining1101Demo.Authorization;
@@ -141,6 +142,69 @@ namespace MyTraining1101Demo.Customer_data
             await CurrentUnitOfWork.SaveChangesAsync();
         }
 
+
+
+        //"edit operation"
+
+        [AbpAuthorize(AppPermissions.Pages_Tenant_Customers_EditCustomer)]
+
+        public async Task<GetCustomerForEditOutput> GetCustomerForEdit(EntityDto input)
+        {
+            var customer = await _customerRepository
+                .GetAllIncluding(c => c.CustomerUsers)
+                .Where(c => c.Id == input.Id)
+                .FirstOrDefaultAsync();
+
+            if (customer == null)
+            {
+                throw new UserFriendlyException("Customer not found");
+            }
+
+            var output = ObjectMapper.Map<GetCustomerForEditOutput>(customer);
+            output.UserIds = customer.CustomerUsers?.Select(cu => cu.UserId).ToList() ?? new List<long>();
+
+            return output;
+        }
+
+        [AbpAuthorize(AppPermissions.Pages_Tenant_Customers_EditCustomer)]
+
+        public async Task EditCustomer(EditCustomerInput input)
+        {
+            var customer = await _customerRepository.GetAsync(input.Id);
+
+            customer.Name = input.Name;
+            customer.Email = input.Email;
+            customer.Address = input.Address;
+            customer.RegistrationDate = input.RegistrationDate;
+
+            await _customerRepository.UpdateAsync(customer);
+
+            var existingUsers = await _customerUserRepository
+                .GetAll()
+                .Where(cu => cu.CustomerId == input.Id)
+                .ToListAsync();
+
+            foreach (var existing in existingUsers)
+            {
+                await _customerUserRepository.DeleteAsync(existing);
+            }
+
+            if (input.UserIds != null && input.UserIds.Any())
+            {
+                foreach (var userId in input.UserIds)
+                {
+                    var newCU = new CustomerUser
+                    {
+                        CustomerId = input.Id,
+                        UserId = userId
+                    };
+
+                    await _customerUserRepository.InsertAsync(newCU);
+                }
+            }
+
+            await CurrentUnitOfWork.SaveChangesAsync();
+        }
 
 
 

@@ -106,7 +106,7 @@ namespace MyTraining1101Demo.Authorization
             //pages.CreateChildPermission(AppPermissions.Pages_Tenant_Customers, L("Customers"), multiTenancySides: MultiTenancySides.Tenant);
             customers.CreateChildPermission(AppPermissions.Pages_Tenant_Customers_DeleteCustomer, L("DeleteCustomer"), multiTenancySides: MultiTenancySides.Tenant);
 
-
+            customers.CreateChildPermission(AppPermissions.Pages_Tenant_Customers_EditCustomer, L("EditCustomer"));
 
             //HOST-SPECIFIC PERMISSIONS
 
