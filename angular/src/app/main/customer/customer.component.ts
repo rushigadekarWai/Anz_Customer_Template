@@ -129,25 +129,28 @@ export class CustomerComponent extends AppComponentBase implements OnInit {
     }
 
     deleteCustomer(customer: CustomerListDto): void {
+
         this.message.confirm(
             this.l('AreYouSureToDeleteTheCustomer', customer.name),
             this.l('AreYouSure'),
+
              (isConfirmed: boolean) => {
            if (isConfirmed) {
+
                 this._customerService.deleteCustomer(customer.id).subscribe(
                     () => {
-                        this.notify.info(this.l('SuccessfullyDeleted'));
 
-                        // ✅ Safer delete: use ID match to remove the customer from the local list
+                        this.notify.info(this.l('Successfully Deleted'));
+                      
                         _remove(this.customers, (c) => c.id === customer.id);
 
-                        // ✅ Refresh UI after delete
+                     
                         this.calculatePagination();
                         this.updatePaginatedCustomers();
                     },
                     (error) => {
-                        console.error('Error deleting customer:', error);
-                            this.notify.error('Failed to delete customer');
+                        console.error(' deleting customer:', error);
+                            this.notify.error('Failed delete customer');
                         }
                     );
                 }
