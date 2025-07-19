@@ -1,7 +1,8 @@
+import { forkJoin } from 'rxjs';
 import { Component, Injector, OnInit, HostListener, ViewChild } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { CustomerServiceProxy, CustomerListDto, ListResultDtoOfCustomerListDto } from '@shared/service-proxies/service-proxies';
+import { CustomerServiceProxy, CustomerListDto, ListResultDtoOfCustomerListDto, UserServiceProxy, GetUserForEditOutput } from '@shared/service-proxies/service-proxies';
 import { CreateCustomerModalComponent } from './create-customer-modal.component';
 import { EditCustomerModalComponent } from './edit-customer-modal.component';
 import { remove as _remove } from 'lodash-es';
@@ -14,8 +15,12 @@ import { remove as _remove } from 'lodash-es';
 })
 export class CustomerComponent extends AppComponentBase implements OnInit {
 
+    viewingCustomer: any = null;
+    viewingAssignedUsers: any[] = [];
+
     @ViewChild('createCustomerModal', { static: true }) createCustomerModal: CreateCustomerModalComponent;
     @ViewChild('editCustomerModal', { static: true }) editCustomerModal: EditCustomerModalComponent;
+    @ViewChild('viewCustomerModal', { static: false }) viewCustomerModal: any;
 
     customers: CustomerListDto[] = [];
     paginatedCustomers: CustomerListDto[] = [];
@@ -32,7 +37,8 @@ export class CustomerComponent extends AppComponentBase implements OnInit {
 
     constructor(
         injector: Injector,
-        private _customerService: CustomerServiceProxy
+        private _customerService: CustomerServiceProxy,
+        private _userService: UserServiceProxy
     ) {
         super(injector);
     }
@@ -119,9 +125,22 @@ export class CustomerComponent extends AppComponentBase implements OnInit {
 
 
     viewCustomer(customer: CustomerListDto): void {
-        // Implement view customer logic
-        console.log('View customer:', customer);
-        this.message.info('View customer: ' + customer.name);
+        this._customerService.getCustomerForEdit(customer.id).subscribe(result => {
+            this.viewingCustomer = customer;
+            const userIds = result.userIds || [];
+            if (userIds.length === 0) {
+                this.viewingAssignedUsers = [];
+                this.viewCustomerModal.show();
+                return;
+            }
+            const userDetailObservables = userIds.map(id => this._userService.getUserForEdit(id));
+            forkJoin(userDetailObservables).subscribe((userResults: GetUserForEditOutput[]) => {
+                this.viewingAssignedUsers = userResults
+                    .map(res => res.user)
+                    .filter(u => !!u);
+                this.viewCustomerModal.show();
+            });
+        });
     }
 
     editCustomer(customer: CustomerListDto): void {

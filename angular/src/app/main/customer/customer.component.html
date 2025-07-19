@@ -138,3 +138,9 @@
 
 <!-- Edit Customer Modal -->
 <edit-customer-modal #editCustomerModal (modalSave)="customerCreated()"></edit-customer-modal>
+
+<!-- View Customer Modal -->
+<view-customer-modal #viewCustomerModal
+  [viewingCustomer]="viewingCustomer"
+  [viewingAssignedUsers]="viewingAssignedUsers">
+</view-customer-modal>
