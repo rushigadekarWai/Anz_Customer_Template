@@ -42,7 +42,7 @@
             <div class="user-controls mb-2">
               <select class="form-control user-select" [(ngModel)]="selectedUserId" name="selectedUser">
                 <option value="">{{'Select user' | localize}}</option>
-                <option *ngFor="let user of getAvailableUsers()" [value]="user.id">
+                <option *ngFor="let user of getRemainingUsers()" [value]="user.id">
                   {{ user.name || user.userName }}
                 </option>
               </select>

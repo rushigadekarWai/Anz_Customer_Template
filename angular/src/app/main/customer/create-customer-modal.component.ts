@@ -35,7 +35,7 @@ export class CreateCustomerModalComponent extends AppComponentBase {
     show(): void {
         this.active = true;
         this.customer = new CreateCustomerInput();
-        this.customer.userIds = []; // Initialize userIds array
+        this.customer.userIds = []; 
         this.selectedUsers = [];
         this.selectedUserId = null;
         this.getUsers();
@@ -50,7 +50,7 @@ export class CreateCustomerModalComponent extends AppComponentBase {
         
 
         // this._userService.getUsers(input).subscribe( (result)=>{
-        //     this.users = result.items || [];
+        //     this.users = result.items;
 
         // }, (err)=>{
         //     this.users=[];

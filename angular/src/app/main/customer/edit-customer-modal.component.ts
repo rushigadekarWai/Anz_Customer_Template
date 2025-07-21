@@ -47,18 +47,18 @@ export class EditCustomerModalComponent extends AppComponentBase {
       this.getUsers(async () => {
         console.log('Loaded users:', this.users);
         if (this.customer.userIds && this.customer.userIds.length > 0) {
-          // Ensure both sides are numbers for comparison
+          
           const customerUserIds = this.customer.userIds.map(id => typeof id === 'string' ? parseInt(id, 10) : id);
-          // Find missing userIds not in users list
+          
           const loadedUserIds = this.users.map(u => typeof u.id === 'string' ? parseInt(u.id, 10) : u.id);
           const missingUserIds = customerUserIds.filter(id => !loadedUserIds.includes(id));
           if (missingUserIds.length > 0) {
-            // Fetch missing users one by one and add to users list
+           
             for (const userId of missingUserIds) {
               try {
                 const user = await this._userService.getUserForEdit(userId).toPromise();
                 if (user && user.user) {
-                  // Map UserEditDto to UserListDto (copy only matching properties)
+                 
                   const userEdit = user.user;
                   const userListDto: UserListDto = {
                     id: userEdit.id,
@@ -67,7 +67,7 @@ export class EditCustomerModalComponent extends AppComponentBase {
                     userName: userEdit.userName,
                     emailAddress: userEdit.emailAddress,
                     phoneNumber: userEdit.phoneNumber,
-                    // Provide safe defaults for missing properties
+                   
                     profilePictureId: null,
                     isEmailConfirmed: false,
                     roles: [],
@@ -80,7 +80,7 @@ export class EditCustomerModalComponent extends AppComponentBase {
               }
             }
           }
-          // Now filter for selectedUsers
+        
           this.selectedUsers = this.users.filter(u => customerUserIds.includes(typeof u.id === 'string' ? parseInt(u.id, 10) : u.id));
           console.log('Selected users after filtering:', this.selectedUsers);
         } else {
@@ -109,6 +109,7 @@ export class EditCustomerModalComponent extends AppComponentBase {
   addUser(): void {
     if (this.selectedUserId) {
       const userId = typeof this.selectedUserId === 'string' ? parseInt(this.selectedUserId) : this.selectedUserId;
+  
       const userToAdd = this.users.find(u => u.id === userId);
       if (userToAdd && !this.selectedUsers.find(u => u.id === userToAdd.id)) {
         this.selectedUsers.push(userToAdd);
@@ -124,7 +125,7 @@ export class EditCustomerModalComponent extends AppComponentBase {
     }
   }
 
-  getAvailableUsers(): UserListDto[] {
+ getRemainingUsers(): UserListDto[] {
     return this.users.filter(user => !this.selectedUsers.find(su => su.id === user.id));
   }
 
