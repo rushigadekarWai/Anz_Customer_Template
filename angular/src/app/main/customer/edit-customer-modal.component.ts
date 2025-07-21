@@ -1,18 +1,21 @@
-import { Component, ViewChild, Injector, Output, EventEmitter, ElementRef } from '@angular/core';
+import { Component, ViewChild, Injector, Output, EventEmitter, ElementRef, HostListener } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { CustomerServiceProxy, EditCustomerInput, GetCustomerForEditOutput, UserServiceProxy, GetUsersInput, UserListDto } from '@shared/service-proxies/service-proxies';
 import { finalize } from 'rxjs/operators';
+import { DateTime } from 'luxon';
 
 @Component({
   selector: 'edit-customer-modal',
   templateUrl: './edit-customer-modal.component.html',
-   styleUrls: ['./create-customer-modal.component.css']
+  styleUrls: ['./create-customer-modal.component.css']
 })
 export class EditCustomerModalComponent extends AppComponentBase {
   @Output() modalSave: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('modal', { static: false }) modal: ModalDirective;
   @ViewChild('nameInput', { static: false }) nameInput: ElementRef;
+    @ViewChild('dropdownWrapper', { static: false }) dropdownWrapper!: ElementRef;
+     @ViewChild('modalWrapper', { static: false }) modalWrapper!: ElementRef;
 
   active = false;
   saving = false;
@@ -29,6 +32,17 @@ export class EditCustomerModalComponent extends AppComponentBase {
   ) {
     super(injector);
   }
+registrationDateString: string = ''; 
+
+formatDateToInput(date: string | Date): string {
+  const d = new Date(date);
+  return d.toISOString().split('T')[0]; 
+}
+
+onDateChange(dateStr: string): void {
+  this.customer.registrationDate = DateTime.fromISO(dateStr);
+}
+
 
   show(customerId: number): void {
     this._customerService.getCustomerForEdit(customerId).subscribe((result: GetCustomerForEditOutput) => {
@@ -37,7 +51,13 @@ export class EditCustomerModalComponent extends AppComponentBase {
       this.customer.name = result.name || '';
       this.customer.email = result.email || '';
       this.customer.address = result.address || '';
-      this.customer.registrationDate = result.registrationDate;
+    //  this.customer.registrationDate = result.registrationDate;
+     const registrationDate = result.registrationDate as DateTime;
+    this.customer.registrationDate = registrationDate;
+    this.registrationDateString = registrationDate.toFormat('yyyy-MM-dd'); 
+
+
+
       this.customer.userIds = (result.userIds || []).slice();
 
       console.log('Fetched customer.userIds:', this.customer.userIds);
@@ -118,14 +138,14 @@ export class EditCustomerModalComponent extends AppComponentBase {
     }
   }
 
-  removeUser(user: UserListDto): void {
-    const index = this.selectedUsers.findIndex(u => u.id === user.id);
-    if (index > -1) {
-      this.selectedUsers.splice(index, 1);
-    }
-  }
+  // removeUser(user: UserListDto): void {
+  //   const index = this.selectedUsers.findIndex(u => u.id === user.id);
+  //   if (index > -1) {
+  //     this.selectedUsers.splice(index, 1);
+  //   }
+  // }
 
- getRemainingUsers(): UserListDto[] {
+  getRemainingUsers(): UserListDto[] {
     return this.users.filter(user => !this.selectedUsers.find(su => su.id === user.id));
   }
 
@@ -156,4 +176,52 @@ export class EditCustomerModalComponent extends AppComponentBase {
     this.active = false;
     this.modal.hide();
   }
+
+
+  // -------------------------- Dropdown select code for users checekboxes -------------------------------------------
+
+  dropdownOpen: boolean = false;
+  editingCustomer: any;
+
+
+  toggleDropdown(): void {
+    this.dropdownOpen = !this.dropdownOpen;
+  }
+
+  toggleUserSelection(user: any, isChecked: boolean): void {
+    if (isChecked) {
+      if (!this.selectedUsers.find(u => u.id === user.id)) {
+        this.selectedUsers.push(user);
+      }
+    } else {
+      this.selectedUsers = this.selectedUsers.filter(u => u.id !== user.id);
+    }
+  }
+
+  isUserSelected(userId: number): boolean {
+    return this.selectedUsers.some(u => u.id === userId);
+  }
+
+  removeUser(user: any): void {
+    this.selectedUsers = this.selectedUsers.filter(u => u.id !== user.id);
+
+    setTimeout(() => {
+      this.dropdownOpen = true;
+    });
+  }
+
+  loadCustomerForEdit(customer: any): void {
+    this.editingCustomer = customer;
+    this.selectedUsers = this.users.filter(u =>
+      customer.assignedUserIds.includes(u.id)
+    );
+  }
+
+    @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent): void {
+    if (this.dropdownWrapper && !this.dropdownWrapper.nativeElement.contains(event.target)) {
+      this.dropdownOpen = false;
+    }
+  }
+   
 }

@@ -1,4 +1,5 @@
-<div bsModal #modal="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true" [config]="{backdrop: 'static'}">
+<div bsModal #modal="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="modal" aria-hidden="true" [config]="{backdrop: 'static'}">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <form *ngIf="active" #customerForm="ngForm" novalidate (ngSubmit)="save()">
@@ -14,28 +15,16 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>Customer Name<span class="required-asterisk">*</span></label>
-                            <input #nameInput #nameModel="ngModel"
-                                   class="form-control" 
-                                   type="text" 
-                                   name="name" 
-                                   [(ngModel)]="customer.name" 
-                                   required 
-                                   maxlength="32"
-                                   placeholder="Enter customer Name">
+                            <input #nameInput #nameModel="ngModel" class="form-control" type="text" name="name"
+                                [(ngModel)]="customer.name" required maxlength="32" placeholder="Enter customer Name">
                             <div class="validation-message" *ngIf="nameModel.invalid && nameModel.touched">
                                 Please enter customer Name
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Customer Email<span class="required-asterisk">*</span></label>
-                            <input class="form-control" 
-                                   type="email" 
-                                   name="email" 
-                                   [(ngModel)]="customer.email" 
-                                   required 
-                                   maxlength="255" 
-                                   placeholder="Enter customer email"
-                                   #emailInput #emailModel="ngModel">
+                            <input class="form-control" type="email" name="email" [(ngModel)]="customer.email" required
+                                maxlength="255" placeholder="Enter customer email" #emailInput #emailModel="ngModel">
                             <div class="validation-message" *ngIf="emailModel.invalid && emailModel.touched">
                                 Please enter customer email
                             </div>
@@ -46,25 +35,17 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>Customer Address</label>
-                            <input class="form-control" 
-                                   type="text" 
-                                   name="address" 
-                                   [(ngModel)]="customer.address" 
-                                   maxlength="255"
-                                   placeholder="Enter customer Address">
+                            <input class="form-control" type="text" name="address" [(ngModel)]="customer.address"
+                                maxlength="255" placeholder="Enter customer Address">
                             <div class="validation-message" *ngIf="false">
                                 Please enter customer address
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Registration Date</label>
-                            <input class="form-control" 
-                                   type="date" 
-                                   name="registrationDate" 
-                                   [(ngModel)]="customer.registrationDate" 
-                                   required
-                                   placeholder="Enter your registration Date"
-                                   #dateInput #dateModel="ngModel">
+                            <input class="form-control" type="date" name="registrationDate"
+                                [(ngModel)]="customer.registrationDate" required
+                                placeholder="Enter your registration Date" #dateInput #dateModel="ngModel">
                             <div class="validation-message" *ngIf="dateModel.invalid && dateModel.touched">
                                 Please enter your registration Date
                             </div>
@@ -72,7 +53,7 @@
                     </div>
 
                     <!-- Add Users Section -->
-                    <div class="users-section">
+                    <!-- <div class="users-section">
                         <label class="section-label">Add Users</label>
                         <div class="user-controls">
                             <select class="form-control user-select" [(ngModel)]="selectedUserId" name="selectedUser">
@@ -86,8 +67,7 @@
                                 Add User
                             </button>
                         </div>
-                        
-                        <!-- Selected Users List -->
+                    
                         <div class="selected-users" *ngIf="selectedUsers.length > 0">
                             <div class="selected-user-item" *ngFor="let user of selectedUsers">
                                 <span class="user-name">{{ user.name || user.userName }}</span>
@@ -96,6 +76,58 @@
                                 </button>
                             </div>
                         </div>
+                    </div> -->
+
+
+                    <div class="form-group users-section position-relative" #dropdownWrapper>
+                        <label class="form-label fw-semibold">Add Users</label>
+
+                        <!-- Custom dropdown input box -->
+                        <div class="form-control dropdown-select-box d-flex flex-wrap align-items-center"
+                            (click)="toggleDropdown()">
+                            <ng-container *ngIf="selectedUsers.length > 0; else placeholder">
+                                <div class="selected-badge d-flex align-items-center me-2 mb-1"
+                                    *ngFor="let user of selectedUsers" (click)="$event.stopPropagation()">
+                                    {{ user.name || user.userName }}
+                                    <span class="remove-btn ms-2" (click)="removeUser(user)">×</span>
+                                </div>
+                            </ng-container>
+                            <ng-template #placeholder>
+                                <span class="placeholder">Select Users</span>
+                            </ng-template>
+                            <i class="fa fa-chevron-down ms-auto dropdown-arrow" [class.rotate]="dropdownOpen"></i>
+                        </div>
+
+                        <!-- Checkbox dropdown list -->
+                        <div class="checkbox-users-list border rounded shadow-sm bg-white mt-1 position-absolute w-100 z-index-10"
+                            *ngIf="dropdownOpen">
+                            <!-- <label *ngFor="let user of users" class="form-check d-flex align-items-center mb-2">
+                                <input class="form-check-input me-2" type="checkbox" [value]="user.id"
+                                    (change)="toggleUserSelection(user, $event.target.checked)"
+                                    [checked]="isUserSelected(user.id)" (click)="$event.stopPropagation()" />
+                                <span class="form-check-label">{{ user.name || user.userName }}</span>
+                            </label> -->
+                            <ng-container *ngIf="getRemainingUsers().length > 0; else noUsersLeft">
+    <label *ngFor="let user of getRemainingUsers()" class="form-check d-flex align-items-center mb-2">
+      <input
+        class="form-check-input me-2"
+        type="checkbox"
+        [value]="user.id"
+        (change)="toggleUserSelection(user, $event.target.checked)"
+        [checked]="isUserSelected(user.id)"
+        (click)="$event.stopPropagation()"
+      />
+      <span class="form-check-label">{{ user.name || user.userName }}</span>
+    </label>
+  </ng-container>
+
+  <!-- Message when no users are left to select -->
+  <ng-template #noUsersLeft>
+    <div class="text-muted p-2 small text-center">
+      No users left to assign.
+    </div>
+  </ng-template>
+                        </div>
                     </div>
                 </div>
 
@@ -103,10 +135,8 @@
                     <button [disabled]="saving" type="button" class="btn btn-secondary" (click)="close()">
                         Cancel
                     </button>
-                    <button type="submit" class="btn btn-primary"
-                        [disabled]="!customerForm.form.valid"
-                        [buttonBusy]="saving"
-                        [busyText]="'Saving...'">
+                    <button type="submit" class="btn btn-primary" [disabled]="!customerForm.form.valid"
+                        [buttonBusy]="saving" [busyText]="'Saving...'">
                         <i class="fa fa-save"></i>
                         <span>Save</span>
                     </button>

@@ -1,4 +1,5 @@
-<div bsModal #modal="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true" [config]="{backdrop: 'static'}">
+<div bsModal #modal="bs-modal" (onShown)="onShown()" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="modal" aria-hidden="true" [config]="{backdrop: 'static'}" #modalWrapper>
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <form *ngIf="active" #customerForm="ngForm" novalidate (ngSubmit)="save()">
@@ -8,7 +9,7 @@
           </h4>
           <button type="button" class="close" (click)="close()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
-          </button>          
+          </button>
         </div>
 
         <div class="modal-body">
@@ -27,17 +28,32 @@
           <!-- Address -->
           <div class="form-group">
             <label>{{"Address" | localize}}</label>
-            <input class="form-control" type="text" name="address" [(ngModel)]="customer.address" required maxlength="255">
+            <input class="form-control" type="text" name="address" [(ngModel)]="customer.address" required
+              maxlength="255">
           </div>
 
           <!-- Registration Date -->
           <div class="form-group">
             <label>{{"RegistrationDate" | localize}}</label>
-            <input class="form-control" type="date" name="registrationDate" [(ngModel)]="customer.registrationDate" required>
+            <input class="form-control" type="date" name="registrationDate"  [(ngModel)]="registrationDateString"
+  (ngModelChange)="onDateChange($event)"
+  required>
+            <!-- <input
+  class="form-control"
+  type="date"
+  name="registrationDate"
+  [(ngModel)]="registrationDateString"
+  (ngModelChange)="onDateChange($event)"
+  required
+/> -->
+
+
+
+
           </div>
 
           <!-- Assigned ABP Users (Add/Remove like create modal) -->
-          <div class="users-section">
+          <!-- <div class="users-section">
             <label class="section-label">{{"AssignUsers" | localize}}</label>
             <div class="user-controls mb-2">
               <select class="form-control user-select" [(ngModel)]="selectedUserId" name="selectedUser">
@@ -67,12 +83,64 @@
                 </div>
               </ng-template>
             </div>
+          </div> -->
+
+          <div class="form-group users-section position-relative" #dropdownWrapper>
+            <label class="form-label fw-semibold">Assign Users</label>
+
+            <!-- Custom dropdown input -->
+            <div class="form-control dropdown-select-box d-flex flex-wrap align-items-center"
+              (click)="toggleDropdown()">
+              <ng-container *ngIf="selectedUsers.length > 0; else placeholder">
+                <div class="selected-badge d-flex align-items-center me-2 mb-1" *ngFor="let user of selectedUsers"
+                  (click)="$event.stopPropagation()">
+                  {{ user.name || user.userName }}
+                  <span class="remove-btn ms-2" (click)="removeUser(user)">×</span>
+                </div>
+              </ng-container>
+              <ng-template #placeholder>
+                <span class="placeholder">Select Users</span>
+              </ng-template>
+              <i class="fa fa-chevron-down ms-auto dropdown-arrow" [class.rotate]="dropdownOpen"></i>
+            </div>
+
+            <!-- Checkbox dropdown list -->
+            <div class="checkbox-users-list border rounded shadow-sm bg-white mt-1 position-absolute w-100 z-index-10"
+              *ngIf="dropdownOpen" (click)="$event.stopPropagation()">
+              <!-- <label *ngFor="let user of users" class="form-check d-flex align-items-center mb-2">
+                <input class="form-check-input me-2" type="checkbox" [value]="user.id"
+                  [checked]="isUserSelected(user.id)" (change)="toggleUserSelection(user, $event.target.checked)" />
+                <span class="form-check-label">{{ user.name || user.userName }}</span>
+              </label> -->
+
+              <ng-container *ngIf="getRemainingUsers().length > 0; else noUsersLeft">
+    <label *ngFor="let user of getRemainingUsers()" class="form-check d-flex align-items-center mb-2">
+      <input
+        class="form-check-input me-2"
+        type="checkbox"
+        [value]="user.id"
+        (change)="toggleUserSelection(user, $event.target.checked)"
+        [checked]="isUserSelected(user.id)"
+        (click)="$event.stopPropagation()"
+      />
+      <span class="form-check-label">{{ user.name || user.userName }}</span>
+    </label>
+  </ng-container>
+
+  <!-- Message when no users are left to select -->
+  <ng-template #noUsersLeft>
+    <div class="text-muted p-2 small text-center">
+      No users left to assign.
+    </div>
+  </ng-template>
+            </div>
           </div>
         </div>
 
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" (click)="close()">{{"Cancel" | localize}}</button>
-          <button type="submit" class="btn btn-primary" [disabled]="!customerForm.form.valid || saving" [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot' | localize)">
+          <button type="submit" class="btn btn-primary" [disabled]="!customerForm.form.valid || saving"
+            [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot' | localize)">
             <i class="fa fa-save"></i> <span>{{"Save" | localize}}</span>
           </button>
         </div>

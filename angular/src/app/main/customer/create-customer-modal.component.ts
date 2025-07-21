@@ -1,4 +1,4 @@
-import { Component, ViewChild, Injector, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, ViewChild, Injector, ElementRef, Output, EventEmitter, HostListener } from '@angular/core';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { CustomerServiceProxy, CreateCustomerInput, UserServiceProxy, GetUsersInput, UserListDto } from '@shared/service-proxies/service-proxies';
 import { AppComponentBase } from '@shared/common/app-component-base';
@@ -15,6 +15,7 @@ export class CreateCustomerModalComponent extends AppComponentBase {
 
     @ViewChild('modal', { static: false }) modal: ModalDirective;
     @ViewChild('nameInput', { static: false }) nameInput: ElementRef;
+     @ViewChild('dropdownWrapper', { static: false }) dropdownWrapper!: ElementRef;
 
     customer: CreateCustomerInput = new CreateCustomerInput();
     users: UserListDto[] = [];
@@ -74,12 +75,17 @@ export class CreateCustomerModalComponent extends AppComponentBase {
         }
     }
 
-    removeUser(user: UserListDto): void {
-        const index = this.selectedUsers.findIndex(u => u.id === user.id);
-        if (index > -1) {
-            this.selectedUsers.splice(index, 1);
-        }
-    }
+    // removeUser(user: UserListDto): void {
+    //     const index = this.selectedUsers.findIndex(u => u.id === user.id);
+    //     if (index > -1) {
+    //         this.selectedUsers.splice(index, 1);
+    //     }
+    // }
+
+    getRemainingUsers(): any[] {
+  return this.users.filter(user => !this.selectedUsers.some(u => u.id === user.id));
+}
+
 
     getAvailableUsers(): UserListDto[] {
         return this.users.filter(user => !this.selectedUsers.find(su => su.id === user.id));
@@ -118,4 +124,43 @@ export class CreateCustomerModalComponent extends AppComponentBase {
         this.modal.hide();
         this.active = false;
     }
+
+// @HostListener('document:click', ['$event'])
+// onOutsideClick(event: Event) {
+//   const clickedInside = this.elementRef.nativeElement.contains(event.target);
+//   if (!clickedInside) {
+//     this.dropdownOpen = false;
+//   }
+// }
+
+
+    dropdownOpen: boolean = false;
+
+  toggleDropdown(): void {
+    this.dropdownOpen = !this.dropdownOpen;
+  }
+
+  toggleUserSelection(user: any, isChecked: boolean): void {
+    if (isChecked) {
+      if (!this.selectedUsers.find((u) => u.id === user.id)) {
+        this.selectedUsers.push(user);
+      }
+    } else {
+      this.selectedUsers = this.selectedUsers.filter((u) => u.id !== user.id);
+    }
+  }
+
+  isUserSelected(userId: number): boolean {
+    return this.selectedUsers.some((u) => u.id === userId);
+  }
+
+  removeUser(user: any): void {
+    this.selectedUsers = this.selectedUsers.filter((u) => u.id !== user.id);
+  }
+
+   @HostListener('document:click', ['$event'])
+  onClickOutside(event: MouseEvent): void {
+    if (this.dropdownWrapper && !this.dropdownWrapper.nativeElement.contains(event.target)) {
+      this.dropdownOpen = false;
+    }}
 }
