@@ -14,17 +14,17 @@
           <div class="mb-3"><strong>Address:</strong> {{ viewingCustomer.address }}</div>
           <div class="mb-3"><strong>Registration Date:</strong> {{ viewingCustomer.registrationDate | date: 'dd-MM-yyyy' }}</div>
           <div class="mb-3">
-            <strong>Assigned Users:</strong>
+            <strong>Assigned Users: </strong>
             <div *ngIf="viewingAssignedUsers.length > 0; else noAssignedUsers">
               <ul class="list-group list-group-flush">
                 <li *ngFor="let user of viewingAssignedUsers" class="list-group-item px-0">
-                  <span class="fw-semibold">{{ user.name || user.userName }}</span>
+                  <span class="fw-semibold">{{ user.name || user.userName }} </span>
                   <span class="text-muted small">({{ user.emailAddress }})</span>
                 </li>
               </ul>
             </div>
             <ng-template #noAssignedUsers>
-              <span class="text-muted">No users assigned.</span>
+              <span class="text-muted"> No users assigned.</span>
             </ng-template>
           </div>
         </div>
